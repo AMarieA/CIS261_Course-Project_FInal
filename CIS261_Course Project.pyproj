@@ -3,13 +3,14 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>85ebd52e-4a02-4cfb-a717-2e6629c2f175</ProjectGuid>
-    <ProjectHome>.</ProjectHome>
-    <StartupFile>Course_Project_III.py</StartupFile>
+    <ProjectHome>
+    </ProjectHome>
+    <StartupFile>CIS261_Course_Project.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
-    <Name>Course Project_III</Name>
+    <Name>CIS261_Course Project</Name>
     <RootNamespace>Course Project_III</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -21,7 +22,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Course_Project_III.py" />
+    <Compile Include="CIS261_Course_Project.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
