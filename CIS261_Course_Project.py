@@ -1,6 +1,74 @@
 #ALaina Acton
 #CIS 261
-#Course Project Phase 3
+#Course Project Phase 4
+
+from collections import UserList
+from datetime import datetime
+
+def CreateUsers():
+    print('##### Create users, passwords, and roles #####')
+    UserFile = open("Users.txt", "a+")
+    while True:
+        username = GetUserName()
+        if (username.upper() == "END"):
+            break
+        userpwd = GetUserPassword()
+        userrole = GetUserRole()
+        
+        UserDetail = username + "|" + userpwd + "|" + userrole + "\n"
+        UserFile.write(UserDetail)
+    
+    UserFile.close()
+    printuserinfo()
+    
+def GetUserName():
+    username = input("Enter user name or 'End' to quit: ")
+    return username
+
+def GetUserPassword():
+    pwd = input("Enter password: ")
+    return pwd
+
+def GetUserRole():
+    userrole = input("Enter role (Admin or User): ")
+    while True:
+        if userrole.upper() == "ADMIN" or userrole.upper() == "USER":
+            return userrole
+        else:
+            userrole = input("Enter role (Admin or User): ")
+            
+def printuserinfo():
+    UserFile = open("Users.txt", "r")
+    while True:
+        UserDetail = UserFile.readline()
+        if not UserDetail:
+            break
+        UserDetail = UserDetail.replace("\n", "")
+        UserList = UserDetail.split("|")
+        username = UserList[0]
+        userpassword = UserList[1]
+        userrole = UserList[2]
+        print("Username: ", username, " Password: ". userpwd, " Role: ", userrole)
+        
+def Login():
+    Userfile = open("Users.txt" "r")
+    UserList = []
+    UserName = input("Enter User Name: ")
+    UserPwd = input("Enter Password: ")
+    UserRole = "None"
+    while True:
+        UserDetail = Userfile.readline()
+        if not UserDetail:
+            return UserRole, UserName, UserPwd
+        UserDetail = UserDetail.replace("\n", "")
+        
+        UserList = UserDetail.split("|")
+        if UserName == UserList[0] and UserPwd == UserList[1]:
+            UserRole = UserList[2] 
+            return UserRole, UserName
+    return UserRole, UserName
+        
+
 
 def GetempName():
     empname = input("Enter Employee name: ")
@@ -29,16 +97,37 @@ def CalcTaxandNetPay(hours, hourlyrate, taxrate):
     netpay = grosspay - incometax
     return grosspay, incometax, netpay
 
-def printInfo(EmpDetailList): #Establish a list and assign places.
+def printInfo(DetailsPrinted): #Establish a list and assign places.
     TotEmployees = 0
     TotHours = 0.00
     TotGrossPay = 0.00
     TotTax = 0.00
     TotNetPay = 0.00
-    
-    for EmpList in EmpDetailList:
+    EmpFile = open("Employees.txt", "r")
+    while True:
+        rundate = input("Enter start date for report (mm/dd/yyyy) or ALL for all data in file: ")
+        if (rundate.upper() == "ALL"):
+            break
+        try:
+            rundate = datetime.strptime(rundate, "%m/%d/%Y")
+            break
+        except ValueError:
+            print("Invalid date format. Try again.")
+            print()
+            continue
+    while True:
+        EmpDetail = EmpFile.readline()
+        if not EmpDetail:
+            break
+        EmpDetail = EmpDetail.replace("\n", "")
         
+        EmpList = EmpDetail.split("|")
+       
         fromdate = EmpList[0]
+        if (str(rundate).upper() != "ALL"):
+            checkdate = datetime.strptime(fromdate, "%m/%d/%Y")
+            if (checkdate < rundate):
+                continue
         todate = EmpList[1]
         empname = EmpList[2]
         hours = EmpList[3]
@@ -55,11 +144,16 @@ def printInfo(EmpDetailList): #Establish a list and assign places.
         TotTax += incometax
         TotNetPay += netpay
     
-    EmpTotals["TotEmp"] = TotEmployees
-    EmpTotals["TotHours"] = TotHours
-    EmpTotals["TotGrossPay"] = TotGrossPay
-    EmpTotals["TotTax"] = TotTax
-    EmpTotals["TotNetPay"] = TotNetPay
+        EmpTotals["TotEmp"] = TotEmployees
+        EmpTotals["TotHours"] = TotHours
+        EmpTotals["TotGrossPay"] = TotGrossPay
+        EmpTotals["TotTax"] = TotTax
+        EmpTotals["TotNetPay"] = TotNetPay
+        DetailsPrinted = True
+    if (DetailsPrinted):
+        PrintTotals(EmpTotals)
+    else:
+        print("No detail information to print")
 
 def PrintTotals(EmpTotals):
     print()
@@ -69,68 +163,34 @@ def PrintTotals(EmpTotals):
     print(f"Total Income Tax: {EmpTotals['TotTax']:,.1%}")
     print(f"Total Net Pay: {EmpTotals['TotNetPay']:,.2f}")
     
-def WriteEmpInfo(employee):
-    file = open("employeeinfo.txt", "a")
-    file.write('{} | {} | {} | {} | {} | {}\n'.format(employee[0], employee[1], employee[2], employee[3], employee[4], employee[5]))
     
-def GetFromDate():
-    valid = False
-    fromdate = ""
-    
-    while not valid:
-        fromdate = input("Enter from date (mm/dd/yyyy): ")
-        if (len(fromdate.split('/')) != 3 and fromdate.upper() != 'ALL'):
-            print("Invalid Date Format")
-        else:
-            valid = True
-            
-    return fromdate
-        
-def ReadEmpInfo(fromdate):
-    EmpDetailList = []
-    
-    file = open("employeeinfo.txt", "r")
-    data = file.readlines()
-    
-    condition = True
-    
-    if fromdate.upper() == 'ALL':
-        condition = False
-        
-    for employee in data:
-        employee = [x.strip() for x in employee.strip().split("|")]
-        
-        if not condition:
-            EmpDetailList.append([employee[0], employee[1], employee[2], float(employee[3]), float(employee[4]), float(employee[5])])
-        else:
-            if fromdate == employee[0]:
-                EmpDetailList.append([employee[0], employee[1], employee[2], float(employee[3]), float(employee[4]), float(employee[5])])
-    return EmpDetailList
     
 if __name__ == "__main__":
-    EmpDetailList = []
+    CreateUsers()
+    print()
+    print("##### Data Entry #####")
+    UserRole, UserName = Login()
+    DetailsPrinted = False
     EmpTotals = {}
-    
-    while True:
-        empname = GetempName()
-        if (empname.upper() == "END"):
-            break
-        fromdate, todate = GetdatesWorked()
-        hours = GethoursWorked()
-        hourlyrate = GethourlyRate()
-        taxrate = GettaxRate()
+    if (UserRole.upp() == "NONE"):
+        print(UserName, " is invalid.")
+    else:
+        if (UserRole.upper() == "ADMIN"):
+            EmpFile = open("Employees.txt", "a+")
+            while True:
+                empname = GetempName()
+                if (empname.upper() == "END"):
+                    break
+                fromdate, todate = GetdatesWorked()
+                hours = GethoursWorked()
+                hourlyrate = GethourlyRate()
+                taxrate = GettaxRate()
         
-        print()
-        EmpDetail = [fromdate, todate, empname, hours, hourlyrate, taxrate]
-        WriteEmpInfo(EmpDetail)
-    print()
-    print()
-    fromdate = GetFromDate()
+                EmpDetail = fromdate, + "|" + todate, "|" + empname, "|" + hours, "|" + hourlyrate, "|" + taxrate, + "\n"
+                EmpFile.write(EmpDetail)
+                
+            EmpFile.close()
     
-    EmpDetailList = ReadEmpInfo(fromdate)
-    
-    print()
-    printInfo(EmpDetailList)
-    print()
-    PrintTotals(EmpTotals)
+        printInfo(DetailsPrinted)
+   
     
